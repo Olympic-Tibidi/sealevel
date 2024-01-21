@@ -9,7 +9,7 @@ This is a Streamlit web app for visualizing areas impacted by rising sea level.
 """
 
 
-st.set_page_config(page_title="8 lines code demo", page_icon="🤖")
+#st.set_page_config(page_title="8 lines code demo", page_icon="🤖")
 
 st.write("# Rising Sea Level impact (2050) on lands in red")
 
