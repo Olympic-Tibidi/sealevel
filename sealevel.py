@@ -4,7 +4,7 @@ import ee
 from streamlit_folium import folium_static
 ee.Initialize(ee.ServiceAccountCredentials(
     st.secrets.json_data,
-    key_data=st.secrets.json_data.private_key))
+    key_data=st.secrets.private_key))
 ee.Authenticate()
 rise=1
 """
