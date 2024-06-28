@@ -1,4 +1,4 @@
-geemap
 streamlit
-ee
-streamlit_folium
+numpy
+rasterio
+plotly
