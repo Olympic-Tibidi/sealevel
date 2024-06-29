@@ -70,12 +70,13 @@ if 'fig' not in st.session_state:
     st.session_state.fig.add_trace(go.Surface(z=np.full(elevation_data.shape, mhhw), showscale=False, opacity=0.5, colorscale=[[0, 'red'], [1, 'red']]))
     st.session_state.fig.add_trace(go.Surface(z=np.full(elevation_data.shape, maxtide), showscale=False, opacity=0.5, colorscale=[[0, 'green'], [1, 'green']]))
     st.session_state.fig.update_layout(
-        title='Marine Terminal Elevation with Tidal Levels',
-        autosize=True,
-        scene=dict(zaxis=dict(title='Elevation (feet)')),
-        margin=dict(l=65, r=50, b=65, t=90)
-    )
-
+         title='Marine Terminal Elevation with Tidal Levels',
+    autosize=False,  # Disable autosizing to set custom width and height
+    width=1200,  # Set the width of the figure
+    height=800,  # Set the height of the figure
+    scene=dict(zaxis=dict(title='Elevation (feet)')),
+    margin=dict(l=65, r=50, b=65, t=90)
+)
 # Add or update the max tide level surface
 st.session_state.fig.for_each_trace(
     lambda trace: trace.update(z=np.full(st.session_state.elevation_data.shape, max_tide)) if trace.name == 'Max Tide' else ()
