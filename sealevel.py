@@ -3,7 +3,7 @@ import numpy as np
 import rasterio
 from rasterio.warp import transform_bounds
 import plotly.graph_objects as go
-
+from google.cloud import storage
 
 target_bucket="new_suzano_spare"
 utc_difference=7
