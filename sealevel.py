@@ -27,6 +27,7 @@ def load_elevation_data(data):
             window = src.window(*raster_bounds)
             elevation_data = src.read(1, window=window, masked=True)
             elevation_data = np.where(elevation_data.mask, np.nan, elevation_data.data)
+            elevation_data = elevation_data[:, ::-1]
     return elevation_data
 mllw = -4.03  # MLLW in feet above NAVD88
 mhhw = mllw + 14.56  # MHHW in feet above MLLW
