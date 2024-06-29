@@ -5,6 +5,8 @@ from rasterio.warp import transform_bounds
 import plotly.graph_objects as go
 from google.cloud import storage
 import io
+import csv
+
 target_bucket="new_suzano_spare"
 utc_difference=7
 
