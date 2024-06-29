@@ -39,7 +39,7 @@ if 'elevation_data' not in st.session_state:
 
 mllw = -4.43
 mhhw = mllw + 14.56
-max_tide = st.slider('Max Tide Level', 5, 20.0, mhhw+1) - 4.43
+max_tide = st.slider('Max Tide Level', 5.0, 20.0, 0.1) - 4.43
 
 fig = go.Figure(data=[go.Surface(z=st.session_state.elevation_data, x=st.session_state.lon, y=st.session_state.lat, colorscale='Earth')])
 #fig.add_trace(go.Surface(z=np.full(st.session_state.elevation_data.shape, mllw), showscale=False, opacity=0.5, colorscale=[[0, 'blue'], [1, 'blue']], name='MLLW'))
