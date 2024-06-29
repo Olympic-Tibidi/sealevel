@@ -22,12 +22,19 @@ def download_blob_to_memory(bucket_name, source_blob_name):
 def load_elevation_data(data):
     with MemoryFile(data) as memfile:
         with memfile.open() as src:
-            geo_bounds = (-122.90612, 47.05128, -122.89835, 47.05930)
-            raster_bounds = transform_bounds('EPSG:4326', src.crs, *geo_bounds, densify_pts=21)
-            window = src.window(*raster_bounds)
-            elevation_data = src.read(1, window=window, masked=True)
-            elevation_data = np.where(elevation_data.mask, np.nan, elevation_data.data)
-            elevation_data = elevation_data[:, ::-1]
+            geo_bounds = (-122.90612, 47.05128, -122.89835, 47.05930)  # Adjusted coordinates
+    
+        # Convert geographic coordinates to the raster's coordinate system
+        raster_bounds = transform_bounds('EPSG:4326', src.crs, *geo_bounds, densify_pts=21)
+        
+        # Crop the raster using the converted bounding box
+        window = src.window(*raster_bounds)
+        terminal_elevation = src.read(1, window=window)
+    
+        # Manually set NoData value if it's not being recognized
+        nodata_value = src.nodata if src.nodata else -3.402823e+38
+        elevation_data = np.where(terminal_elevation == nodata_value, np.nan, terminal_elevation)
+        elevation_data = elevation_data[:, ::-1]
     return elevation_data
 mllw = -4.03  # MLLW in feet above NAVD88
 mhhw = mllw + 14.56  # MHHW in feet above MLLW
