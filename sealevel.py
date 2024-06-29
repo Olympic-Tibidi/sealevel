@@ -8,7 +8,7 @@ import plotly.graph_objects as go
 from google.cloud import storage
 
 # Setup
-target_bucket = "your_bucket_name"
+target_bucket = "new_suzano_spare"
 
 # Download blob function
 def download_blob_to_memory(bucket_name, source_blob_name):
