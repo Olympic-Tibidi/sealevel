@@ -35,7 +35,7 @@ if 'elevation_data' not in st.session_state:
 mllw = -4.03
 
 mhhw = mllw + 14.56
-max_tide=st.slider('MLLW Level', -3.0, 20,0.1)+mllw
+max_tide=st.slider('MLLW Level', -3.0, 20.0,0.1)+mllw
 
 # Create or update the Plotly figure
 if 'fig' not in st.session_state:
