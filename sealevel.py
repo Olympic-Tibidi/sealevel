@@ -21,7 +21,8 @@ def download_blob_to_memory(bucket_name, source_blob_name):
 st.title("Marine Terminal Elevation Viewer")
 file_name = 'terminal.tif'
 data = download_blob_to_memory(target_bucket, file_name)
-max_tide = st.slider("Select Maximum Tide Level (feet)", float(-4.47), float(30.0), float(18.4))
+max_tide_ = st.slider("Select Maximum Tide Level (feet)", float(-4.47), float(30.0), float(18.4))
+
 # Use rasterio to open the file
 with MemoryFile(data) as memfile:
     with memfile.open() as src:
@@ -36,6 +37,7 @@ with MemoryFile(data) as memfile:
         # Plotting code
         mllw = -4.470
         mhhw = mllw + 14.56
+        max_tide=max_tide_+mllw
         fig = go.Figure(data=[go.Surface(z=elevation_data, cmin=min_elevation, cmax=max_elevation, colorscale='Earth')])
         fig.add_trace(go.Surface(z=np.full(elevation_data.shape, mllw), showscale=False, opacity=0.5, colorscale=[[0, 'blue'], [1, 'blue']]))
         fig.add_trace(go.Surface(z=np.full(elevation_data.shape, mhhw), showscale=False, opacity=0.5, colorscale=[[0, 'red'], [1, 'red']]))
