@@ -8,9 +8,8 @@ import plotly.graph_objects as go
 from google.cloud import storage
 
 # Setup your credentials for Google Cloud Storage
-from google.oauth2 import service_account
-credentials = service_account.Credentials.from_service_account_info(st.secrets["gcp_service_account"])
-storage_client = storage.Client(credentials=credentials)
+
+storage_client = storage.Client()
 
 def load_data():
     """ Load data from Google Cloud Storage and return processed elevation data. """
