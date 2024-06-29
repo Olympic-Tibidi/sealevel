@@ -30,16 +30,24 @@ def load_elevation_data(data):
 if 'elevation_data' not in st.session_state:
     data = download_blob_to_memory(target_bucket, "terminal.tif")
     st.session_state.elevation_data = load_elevation_data(data)
+transformer = Transformer.from_crs(src.crs, 'EPSG:4326', always_xy=True)
 
+# Generate geographic coordinates for each pixel
+cols, rows = np.meshgrid(np.arange(elevation_data.shape[1]), np.arange(elevation_data.shape[0]))
+flat_rows, flat_cols = rows.ravel(), cols.ravel()  # Flatten the arrays
+xs, ys = src.xy(flat_rows, flat_cols, offset='center')  # Get center coordinates of each pixel
+lon, lat = transformer.transform(xs, ys)  # Transform to geographic coordinates
+lon, lat = np.array(lon), np.array(lat)  # Convert to numpy arrays
+lon, lat = lon.reshape(rows.shape), lat.reshape(rows.shape)  # Reshape back to the original shape
 # Setup the interactive components and the plot
 mllw = -4.43
 
 mhhw = mllw + 14.56
-max_tide=st.slider('MLLW Level', -3.0, 20.0,0.1)+mllw
+max_tide=st.slider('Max Tide Level', -3.0, 20.0,0.1)+mllw
 
 # Create or update the Plotly figure
 if 'fig' not in st.session_state:
-    st.session_state.fig = go.Figure()
+    st.session_state.fig = go.Figure(data=[go.Surface(z=elevation_data, x=lon, y=lat, cmin=np.nanmin(elevation_data), cmax=np.nanmax(elevation_data), colorscale='Earth')])
     st.session_state.fig.add_trace(go.Surface(z=st.session_state.elevation_data, colorscale='Earth', name='Elevation'))
     st.session_state.fig.update_layout(
         title='Marine Terminal Elevation with Tidal Levels',
