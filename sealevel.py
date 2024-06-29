@@ -24,7 +24,7 @@ def load_elevation_data(data):
 # Initialize session state for elevation data and plot
 if 'elevation_data' not in st.session_state or 'fig' not in st.session_state:
     # Assuming 'data' is loaded from your GCS or other source
-    data = download_blob_to_memory('your-bucket-name', 'terminal.tif')
+    data = download_blob_to_memory(target_bucket, 'terminal.tif')
     st.session_state.elevation_data = load_elevation_data(data)
     
     # Create the initial plot with static elevation data
