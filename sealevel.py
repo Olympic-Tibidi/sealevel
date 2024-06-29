@@ -5,7 +5,7 @@ from rasterio.warp import transform_bounds
 from rasterio.io import MemoryFile
 import plotly.graph_objects as go
 from google.cloud import storage
-
+target_bucket="new_suzano"
 def download_blob_to_memory(bucket_name, source_blob_name):
     """Downloads a blob from the bucket to memory."""
     storage_client = storage.Client()
@@ -28,7 +28,7 @@ def load_elevation_data(data):
 
 # Initialize the elevation data and the figure in Streamlit's state if not already loaded
 if 'elevation_data' not in st.session_state:
-    data = download_blob_to_memory("your-bucket-name", "terminal.tif")
+    data = download_blob_to_memory(target_bucket, "terminal.tif")
     st.session_state.elevation_data = load_elevation_data(data)
 
 # Setup the interactive components and the plot
