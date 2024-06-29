@@ -70,7 +70,7 @@ if 'fig' not in st.session_state:
     st.session_state.fig.add_trace(go.Surface(z=np.full(st.session_state.elevation_data.shape, mhhw), showscale=False, opacity=0.5, colorscale=[[0, 'red'], [1, 'red']]))
     st.session_state.fig.add_trace(go.Surface(z=np.full(st.session_state.elevation_data.shape, maxtide), showscale=False, opacity=0.5, colorscale=[[0, 'green'], [1, 'green']]))
     st.session_state.fig.update_layout(
-         title='Marine Terminal Elevation with Tidal Levels',
+         title='Marine Terminal Ewdwdwlevation with Tidal Levels',
     autosize=False,  # Disable autosizing to set custom width and height
     width=1200,  # Set the width of the figure
     height=800,  # Set the height of the figure
