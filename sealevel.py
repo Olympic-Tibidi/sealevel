@@ -80,6 +80,16 @@ if 'fig' not in st.session_state:
 # st.session_state.fig.for_each_trace(
 #     lambda trace: trace.update(z=np.full(st.session_state.elevation_data.shape, max_tide)) if trace.name == 'Max Tide' else ()
 # )
+st.session_state.fig.add_trace(go.Surface(z=st.session_state.elevation_data, x=st.session_state.lons, y=st.session_state.lats, colorscale='Earth', name='Elevation'))
+    
+    st.session_state.fig.update_layout(
+         title='Marine Terminal Ewdwdwlevation with Tidal Levels',
+    autosize=False,  # Disable autosizing to set custom width and height
+    width=1200,  # Set the width of the figure
+    height=800,  # Set the height of the figure
+    scene=dict(zaxis=dict(title='Elevation (feet)')),
+    margin=dict(l=65, r=50, b=65, t=90)
+)
 st.session_state.fig.add_trace(go.Surface(z=np.full(st.session_state.elevation_data.shape, mllw),x=st.session_state.lons, y=st.session_state.lats, showscale=False, opacity=1, colorscale=[[0, 'blue'], [1, 'blue']]))
 st.session_state.fig.add_trace(go.Surface(z=np.full(st.session_state.elevation_data.shape, mhhw),x=st.session_state.lons, y=st.session_state.lats, showscale=False, opacity=0.5, colorscale=[[0, 'red'], [1, 'red']]))
 st.session_state.fig.add_trace(go.Surface(z=np.full(st.session_state.elevation_data.shape, maxtide),x=st.session_state.lons, y=st.session_state.lats, showscale=False, opacity=0.5, colorscale=[[0, 'green'], [1, 'green']]))
