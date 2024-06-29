@@ -21,13 +21,35 @@ def load_elevation_data(data):
     """Load and preprocess elevation data from an in-memory file."""
     with MemoryFile(data) as memfile:
         with memfile.open() as src:
-            geo_bounds = (-122.90612, 47.05128, -122.89835, 47.05930)
+            geo_bounds = (-122.90612, 47.05128, -122.89835, 47.05930)  # Adjusted coordinates
+    
+            # Convert geographic coordinates to the raster's coordinate system
             raster_bounds = transform_bounds('EPSG:4326', src.crs, *geo_bounds, densify_pts=21)
+            
+            # Crop the raster using the converted bounding box
             window = src.window(*raster_bounds)
-            elevation_data = src.read(1, window=window)
-            nodata = src.nodata if src.nodata else -3.402823e+38
-            elevation_data = np.where(elevation_data == nodata, np.nan, elevation_data)
-    return elevation_data
+            terminal_elevation = src.read(1, window=window)
+        
+            # Manually set NoData value if it's not being recognized
+            nodata_value = src.nodata if src.nodata else -3.402823e+38
+            elevation_data = np.where(terminal_elevation == nodata_value, np.nan, terminal_elevation)
+        
+            # Transformation from raster CRS to geographic coordinates (WGS84)
+            transformer = Transformer.from_crs(src.crs, 'EPSG:4326', always_xy=True)
+        
+            # Generate geographic coordinates for each pixel
+            cols, rows = np.meshgrid(np.arange(elevation_data.shape[1]), np.arange(elevation_data.shape[0]))
+            flat_rows, flat_cols = rows.ravel(), cols.ravel()  # Flatten the arrays
+            xs, ys = src.xy(flat_rows, flat_cols, offset='center')  # Get center coordinates of each pixel
+            lon, lat = transformer.transform(xs, ys)  # Transform to geographic coordinates
+            lon, lat = np.array(lon), np.array(lat)  # Convert to numpy arrays
+            lon, lat = lon.reshape(rows.shape), lat.reshape(rows.shape)  # Reshape back to the original shape
+        
+            # Define tidal levels adjusted from NAVD88
+            mllw = -4.470  # MLLW in feet above NAVD88
+            mhhw = mllw + 14.56  # MHHW in feet above MLLW
+            maxtide=mllw+18.4
+            return elevation_data,lons,lats
 
 # Load data once and handle transformation for display
 if 'elevation_data' not in st.session_state:
