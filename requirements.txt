@@ -2,3 +2,4 @@ streamlit
 numpy
 rasterio
 plotly
+google-cloud-storage
