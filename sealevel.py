@@ -80,8 +80,8 @@ if 'fig' not in st.session_state:
 # st.session_state.fig.for_each_trace(
 #     lambda trace: trace.update(z=np.full(st.session_state.elevation_data.shape, max_tide)) if trace.name == 'Max Tide' else ()
 # )
-st.session_state.fig.add_trace(go.Surface(z=np.full(st.session_state.elevation_data.shape, mllw), showscale=False, opacity=1, colorscale=[[0, 'blue'], [1, 'blue']]))
-st.session_state.fig.add_trace(go.Surface(z=np.full(st.session_state.elevation_data.shape, mhhw), showscale=False, opacity=0.5, colorscale=[[0, 'red'], [1, 'red']]))
-st.session_state.fig.add_trace(go.Surface(z=np.full(st.session_state.elevation_data.shape, maxtide), showscale=False, opacity=0.5, colorscale=[[0, 'green'], [1, 'green']]))
+st.session_state.fig.add_trace(go.Surface(z=np.full(st.session_state.elevation_data.shape, mllw),x=st.session_state.lons, y=st.session_state.lats, showscale=False, opacity=1, colorscale=[[0, 'blue'], [1, 'blue']]))
+st.session_state.fig.add_trace(go.Surface(z=np.full(st.session_state.elevation_data.shape, mhhw),x=st.session_state.lons, y=st.session_state.lats, showscale=False, opacity=0.5, colorscale=[[0, 'red'], [1, 'red']]))
+st.session_state.fig.add_trace(go.Surface(z=np.full(st.session_state.elevation_data.shape, maxtide),x=st.session_state.lons, y=st.session_state.lats, showscale=False, opacity=0.5, colorscale=[[0, 'green'], [1, 'green']]))
 # Plot the figure
 st.plotly_chart(st.session_state.fig)
