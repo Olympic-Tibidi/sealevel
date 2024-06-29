@@ -37,7 +37,7 @@ def load_elevation_data(data):
 # Initialize the elevation data and the figure in Streamlit's state if not already loaded
 if 'elevation_data' not in st.session_state:
     data = download_blob_to_memory(target_bucket, "terminal.tif")
-    st.session_state.elevation_data = load_elevation_data(data)[0]
+    st.session_state.elevation_data = load_elevation_data(data)
 
 
 
