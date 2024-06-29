@@ -1,62 +1,55 @@
 import streamlit as st
-import geemap.foliumap as geemap
-import ee
-from streamlit_folium import folium_static
-ee.Initialize(ee.ServiceAccountCredentials(
-    st.secrets.json_data,
-    key_data=st.secrets.private_key))
-ee.Authenticate()
-rise=1
-"""
-This is a Streamlit web app for visualizing areas impacted by rising sea level.
-"""
+import numpy as np
+import rasterio
+from rasterio.warp import transform_bounds
+import plotly.graph_objects as go
 
 
-#st.set_page_config(page_title="8 lines code demo", page_icon="🤖")
+target_bucket="new_suzano_spare"
+utc_difference=7
 
-st.write("# Rising Sea Level impact (2050) on lands in red")
+def gcp_download_x(bucket_name, source_file_name):
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(source_file_name)
+    data = blob.download_as_bytes()
+    return data
+    
+def gcp_download(bucket_name, source_file_name):
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(source_file_name)
+    data = blob.download_as_text()
+    return data
+    
+def load_data():
+    with rasterio.open('terminal.tif') as src:
+        geo_bounds = (-122.90612, 47.05128, -122.89835, 47.05930)
+        raster_bounds = transform_bounds('EPSG:4326', src.crs, *geo_bounds, densify_pts=21)
+        window = src.window(*raster_bounds)
+        elevation_data = src.read(1, window=window)
+        nodata_value = src.nodata if src.nodata else -3.402823e+38
+        elevation_data = np.where(elevation_data == nodata_value, np.nan, elevation_data)
+        elevation_data = elevation_data[:, ::-1]
+    return elevation_data
 
-DEMO_CODE = """
-ee.Initialize(ee.ServiceAccountCredentials(
-    st.secrets.gee_service_account,
-    key_data=st.secrets.gee_service_account_credentials))
+def plot_elevation(elevation_data, max_tide):
+    min_elevation = np.nanmin(elevation_data[elevation_data > -1000])
+    max_elevation = np.nanmax(elevation_data)
+    mllw = -4.470
+    mhhw = mllw + 14.56
+    fig = go.Figure(data=[go.Surface(z=elevation_data, cmin=min_elevation, cmax=max_elevation, colorscale='Earth')])
+    fig.add_trace(go.Surface(z=np.full(elevation_data.shape, mllw), showscale=False, opacity=0.5, colorscale=[[0, 'blue'], [1, 'blue']]))
+    fig.add_trace(go.Surface(z=np.full(elevation_data.shape, mhhw), showscale=False, opacity=0.5, colorscale=[[0, 'red'], [1, 'red']]))
+    fig.add_trace(go.Surface(z=np.full(elevation_data.shape, max_tide), showscale=False, opacity=0.5, colorscale=[[0, 'green'], [1, 'green']]))
+    fig.update_layout(title='Marine Terminal Elevation with Tidal Levels',
+                      autosize=True,
+                      scene=dict(zaxis=dict(title='Elevation (feet)', range=[-7, max_elevation + 10]),
+                                 camera=dict(eye=dict(x=1.87, y=0.88, z=-0.64))),
+                      margin=dict(l=65, r=50, b=65, t=90))
+    return fig
+elevation_data=gcp_download_x(target_bucket,rf"elevation.csv")
+#elevation_data = load_data()
 
-# create map centered on hong kong with district level zoom
-m = geemap.Map(center=(22.30, 114.1694), zoom=14, basemap="HYBRID")
-dem = ee.Image("NASA/NASADEM_HGT/001")
-impacted_land = dem.expression(
-    "(elevation < 0.3) && (swb == 0)",
-    {'elevation': dem.select('elevation'),
-     'swb': dem.select('swb')})
-viz_params = {'min': 0, 'max': 1, 'palette': ['000000', 'FF0000'],
-              'opacity': 0.4}
-
-m.addLayer(impacted_land, viz_params, 'impacted areas')
-m.addLayerControl()
-
-# render folium map
-folium_static(m)
-"""
-
-#st.code(DEMO_CODE, language="python", line_numbers=False)
-
-# ee.Initialize(ee.ServiceAccountCredentials(
-#     st.secrets.gee_service_account,
-#     key_data=st.secrets.gee_service_account_credentials))
-
-# create map centered on hong kong with district level zoom
-m = geemap.Map(center=(47.0534, -122.90167), zoom=14, basemap="HYBRID")
-dem = ee.Image("NASA/NASADEM_HGT/001")
-impacted_land = dem.expression(
-    f"(elevation < {rise}) && (swb == 0)",
-    {'elevation': dem.select('elevation'),
-     'swb': dem.select('swb')})
-viz_params = {'min': 0, 'max': 1, 'palette': ['000000', 'FF0000'],
-              'opacity': 0.4}
-
-m.addLayer(impacted_land, viz_params, 'impacted areas')
-m.addLayerControl()
-
-# render folium map
-folium_static(m)
-display(m)
+st.title("Marine Terminal Elevation Viewer")
+max_tide = st.slider("Select Maximum Tide Level (feet)", float(-4.47), float(30.0), float(18.4))
