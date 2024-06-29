@@ -25,12 +25,20 @@ def load_elevation_data(data):
             elevation_data = src.read(1, window=window)
             nodata = src.nodata if src.nodata else -3.402823e+38
             elevation_data = np.where(elevation_data == nodata, np.nan, elevation_data)
-            return elevation_data[:, ::-1]  # Return flipped data if needed
+            transformer = Transformer.from_crs(src.crs, 'EPSG:4326', always_xy=True)
+            cols, rows = np.meshgrid(np.arange(elevation_data.shape[1]), np.arange(elevation_data.shape[0]))
+            flat_rows, flat_cols = rows.ravel(), cols.ravel()  # Flatten the arrays
+            xs, ys = src.xy(flat_rows, flat_cols, offset='center')  # Get center coordinates of each pixel
+            lon, lat = transformer.transform(xs, ys)  # Transform to geographic coordinates
+            lon, lat = np.array(lon), np.array(lat)  # Convert to numpy arrays
+            lon, lat = lon.reshape(rows.shape), lat.reshape(rows.shape)  # Reshape back to the original shape
+            return elevation_data[:, ::-1],lon,lat  # Return flipped data if needed
 
 # Initialize the elevation data and the figure in Streamlit's state if not already loaded
 if 'elevation_data' not in st.session_state:
     data = download_blob_to_memory(target_bucket, "terminal.tif")
-    st.session_state.elevation_data = load_elevation_data(data)
+    st.session_state.elevation_data = load_elevation_data(data)[0]
+lon=
 transformer = Transformer.from_crs(src.crs, 'EPSG:4326', always_xy=True)
 
 # Generate geographic coordinates for each pixel
@@ -48,8 +56,8 @@ max_tide=st.slider('Max Tide Level', -3.0, 20.0,0.1)+mllw
 
 # Create or update the Plotly figure
 if 'fig' not in st.session_state:
-    st.session_state.fig = go.Figure(data=[go.Surface(z=elevation_data, x=lon, y=lat, cmin=np.nanmin(elevation_data), cmax=np.nanmax(elevation_data), colorscale='Earth')])
-    st.session_state.fig.add_trace(go.Surface(z=st.session_state.elevation_data, colorscale='Earth', name='Elevation'))
+    st.session_state.fig = go.Figure(data=[go.Surface(z=z=st.session_state.elevation_data[0], x=st.session_state.elevation_data[2], y=st.session_state.elevation_data[1], cmin=np.nanmin(elevation_data), cmax=np.nanmax(elevation_data), colorscale='Earth')])
+    st.session_state.fig.add_trace(go.Surface(z=st.session_state.elevation_data[0], colorscale='Earth', name='Elevation'))
     st.session_state.fig.update_layout(
         title='Marine Terminal Elevation with Tidal Levels',
         autosize=True,
@@ -59,8 +67,8 @@ if 'fig' not in st.session_state:
 
 # Update the tidal planes dynamically
 st.session_state.fig.data = [st.session_state.fig.data[0]]  # Keep only the elevation data
-st.session_state.fig.add_trace(go.Surface(z=np.full(st.session_state.elevation_data.shape, mllw), showscale=False, opacity=0.5, colorscale=[[0, 'blue'], [1, 'blue']], name='MLLW'))
-st.session_state.fig.add_trace(go.Surface(z=np.full(st.session_state.elevation_data.shape, mhhw), showscale=False, opacity=0.5, colorscale=[[0, 'red'], [1, 'red']], name='MHHW'))
-st.session_state.fig.add_trace(go.Surface(z=np.full(st.session_state.elevation_data.shape, max_tide), showscale=False, opacity=0.5, colorscale=[[0, 'red'], [1, 'red']], name='MHHW'))
+st.session_state.fig.add_trace(go.Surface(z=np.full(st.session_state.elevation_data[0].shape, mllw), showscale=False, opacity=0.5, colorscale=[[0, 'blue'], [1, 'blue']], name='MLLW'))
+st.session_state.fig.add_trace(go.Surface(z=np.full(st.session_state.elevation_data[0].shape, mhhw), showscale=False, opacity=0.5, colorscale=[[0, 'red'], [1, 'red']], name='MHHW'))
+st.session_state.fig.add_trace(go.Surface(z=np.full(st.session_state.elevation_data[0].shape, max_tide), showscale=False, opacity=0.5, colorscale=[[0, 'red'], [1, 'red']], name='MHHW'))
 
 st.plotly_chart(st.session_state.fig)
