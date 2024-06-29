@@ -44,7 +44,7 @@ max_tide = st.slider('Max Tide Level', -3.0, 20.0, 0.1) - 4.43
 fig = go.Figure(data=[go.Surface(z=st.session_state.elevation_data, x=st.session_state.lon, y=st.session_state.lat, colorscale='Earth')])
 #fig.add_trace(go.Surface(z=np.full(st.session_state.elevation_data.shape, mllw), showscale=False, opacity=0.5, colorscale=[[0, 'blue'], [1, 'blue']], name='MLLW'))
 #fig.add_trace(go.Surface(z=np.full(st.session_state.elevation_data.shape, mhhw), showscale=False, opacity=0.5, colorscale=[[0, 'red'], [1, 'red']], name='MHHW'))
-fig.add_trace(go.Surface(z=np.full(st.session_state.elevation_data.shape, max_tide), showscale=False, opacity=0.5, colorscale=[[0, 'green'], [1, 'green']], name='Max Tide'))
+fig.add_trace(go.Surface(z=np.full(st.session_state.elevation_data.shape, max_tide),x=st.session_state.lon, y=st.session_state.lat, showscale=False, opacity=0.5, colorscale=[[0, 'green'], [1, 'green']], name='Max Tide'))
 fig.add_trace(go.Surface(z=np.full(st.session_state.elevation_data.shape, mllw),x=st.session_state.lon, y=st.session_state.lat, showscale=False, opacity=0.5, colorscale=[[0, 'blue'], [1, 'blue']], name='MLLW'))
 fig.update_layout(title='Marine Terminal Elevation with Tidal Levels', autosize=False, scene=dict(zaxis=dict(title='Elevation (feet)')), margin=dict(l=65, r=50, b=65, t=90))
 
