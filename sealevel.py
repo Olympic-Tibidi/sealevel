@@ -13,7 +13,14 @@ def gcp_download_x(bucket_name, source_file_name):
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(source_file_name)
     data = blob.download_as_bytes()
-    return data
+
+    # Convert bytes to a file-like object
+    data_io = io.StringIO(data.decode('utf-8'))
+    reader = csv.reader(data_io)
+
+    # Convert CSV data to a list of tuples
+    elevation_list = [tuple(row) for row in reader]
+    return elevation_list
 def read_csv_to_list_of_lists(file_path):
     with open(file_path, 'r', newline='') as file:
         reader = csv.reader(file)
@@ -54,7 +61,7 @@ def plot_elevation(elevation_data, max_tide):
     return fig
 elevation_data=gcp_download_x(target_bucket,rf"elevation.csv")
 #elevation_data = load_data()
-elevation_data = read_csv_to_list_of_lists(elevation_data)
+#elevation_data = read_csv_to_list_of_lists(elevation_data)
 
 st.title("Marine Terminal Elevation Viewer")
 max_tide = st.slider("Select Maximum Tide Level (feet)", float(-4.47), float(30.0), float(18.4))
