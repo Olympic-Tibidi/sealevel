@@ -53,4 +53,4 @@ elevation_data=gcp_download_x(target_bucket,rf"elevation.csv")
 
 st.title("Marine Terminal Elevation Viewer")
 max_tide = st.slider("Select Maximum Tide Level (feet)", float(-4.47), float(30.0), float(18.4))
-plot_elevation(elevation_data,max_tide)
+st.plotly_chart(plot_elevation(elevation_data, max_tide))
