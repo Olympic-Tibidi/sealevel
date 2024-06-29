@@ -11,6 +11,14 @@ import csv
 target_bucket="new_suzano_spare"
 utc_difference=7
 
+def download_blob_to_memory(bucket_name, source_blob_name):
+    """Downloads a blob from the bucket."""
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(source_blob_name)
+    byte_stream = blob.download_as_bytes()
+    return byte_stream
+
 def load_elevation_data(data):
     with MemoryFile(data) as memfile:
         with memfile.open() as src:
