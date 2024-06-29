@@ -28,6 +28,8 @@ def load_elevation_data(data):
             elevation_data = src.read(1, window=window, masked=True)
             elevation_data = np.where(elevation_data.mask, np.nan, elevation_data.data)
     return elevation_data
+mllw = -4.03  # MLLW in feet above NAVD88
+mhhw = mllw + 14.56  # MHHW in feet above MLLW
 
 # Initialize session state for elevation data and plot
 if 'elevation_data' not in st.session_state or 'fig' not in st.session_state:
@@ -39,6 +41,8 @@ if 'elevation_data' not in st.session_state or 'fig' not in st.session_state:
     st.session_state.fig = go.Figure(data=[
         go.Surface(z=st.session_state.elevation_data, colorscale='Earth', name='Elevation')
     ])
+    st.session_state.fig.add_trace(go.Surface(z=np.full(elevation_data.shape, mllw), showscale=False, opacity=1, colorscale=[[0, 'blue'], [1, 'blue']]))
+    st.session_state.fig.add_trace(go.Surface(z=np.full(elevation_data.shape, mhhw), showscale=False, opacity=0.5, colorscale=[[0, 'red'], [1, 'red']]))
     st.session_state.fig.update_layout(
         title='Marine Terminal Elevation with Tidal Levels',
         autosize=True,
@@ -50,7 +54,7 @@ if 'elevation_data' not in st.session_state or 'fig' not in st.session_state:
     )
 
 # Slider to adjust maximum tide level
-max_tide = st.slider('Adjust Max Tide Level', -10.0, 30.0, -4.03)
+max_tide = st.slider('Adjust Max Tide Level', -10.0, 30.0, -4.03)+mllw
 
 # Update the plot with new max tide level
 st.session_state.fig.for_each_trace(
