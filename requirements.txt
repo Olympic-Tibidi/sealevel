@@ -3,3 +3,4 @@ numpy
 rasterio
 plotly
 google-cloud-storage
+pyproj
