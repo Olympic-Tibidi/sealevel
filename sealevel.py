@@ -19,7 +19,7 @@ def download_blob_to_memory(bucket_name, source_blob_name):
     return byte_stream
 st.title("Marine Terminal Elevation Viewer")
 file_name = 'terminal.tif'
-data = download_blob_to_memory(bucket_name, file_name)
+data = download_blob_to_memory(target_bucket, file_name)
 max_tide = st.slider("Select Maximum Tide Level (feet)", float(-4.47), float(30.0), float(18.4))
 # Use rasterio to open the file
 with MemoryFile(data) as memfile:
