@@ -32,7 +32,7 @@ if 'elevation_data' not in st.session_state:
     st.session_state.elevation_data = load_elevation_data(data)
 
 # Setup the interactive components and the plot
-mllw = -4.03
+mllw = -4.43
 
 mhhw = mllw + 14.56
 max_tide=st.slider('MLLW Level', -3.0, 20.0,0.1)+mllw
