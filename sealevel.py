@@ -2,6 +2,7 @@ import streamlit as st
 import numpy as np
 import rasterio
 from rasterio.warp import transform_bounds
+from rasterio.io import MemoryFile
 import plotly.graph_objects as go
 from google.cloud import storage
 import io
