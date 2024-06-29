@@ -38,7 +38,7 @@ def load_elevation_data(data):
 if 'elevation_data' not in st.session_state:
     data = download_blob_to_memory(target_bucket, "terminal.tif")
     st.session_state.elevation_data = load_elevation_data(data)[0]
-lon=
+
 transformer = Transformer.from_crs(src.crs, 'EPSG:4326', always_xy=True)
 
 # Generate geographic coordinates for each pixel
