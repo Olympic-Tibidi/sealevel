@@ -10,7 +10,7 @@ from google.cloud import storage
 # Setup your credentials for Google Cloud Storage
 
 storage_client = storage.Client()
-@st.cache_data(allow_output_mutation=True)
+@st.cache_data()
 def load_data():
     """ Load data from Google Cloud Storage and return processed elevation data. """
     bucket = storage_client.bucket('new_suzano_spare')
