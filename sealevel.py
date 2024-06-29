@@ -49,7 +49,7 @@ def load_elevation_data(data):
             mllw = -4.470  # MLLW in feet above NAVD88
             mhhw = mllw + 14.56  # MHHW in feet above MLLW
             maxtide=mllw+18.4
-            return elevation_data,lons,lats
+            return elevation_data,lon,lat
 
 # Load data once and handle transformation for display
 if 'elevation_data' not in st.session_state:
