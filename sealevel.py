@@ -56,7 +56,7 @@ max_tide=st.slider('Max Tide Level', -3.0, 20.0,0.1)+mllw
 
 # Create or update the Plotly figure
 if 'fig' not in st.session_state:
-    st.session_state.fig = go.Figure(data=[go.Surface(z=z=st.session_state.elevation_data[0], x=st.session_state.elevation_data[2], y=st.session_state.elevation_data[1], cmin=np.nanmin(elevation_data), cmax=np.nanmax(elevation_data), colorscale='Earth')])
+    st.session_state.fig = go.Figure(data=[go.Surface(z=st.session_state.elevation_data[0], x=st.session_state.elevation_data[2], y=st.session_state.elevation_data[1], cmin=np.nanmin(elevation_data), cmax=np.nanmax(elevation_data), colorscale='Earth')])
     st.session_state.fig.add_trace(go.Surface(z=st.session_state.elevation_data[0], colorscale='Earth', name='Elevation'))
     st.session_state.fig.update_layout(
         title='Marine Terminal Elevation with Tidal Levels',
