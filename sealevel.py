@@ -42,12 +42,7 @@ if 'elevation_data' not in st.session_state:
 
 
 # Generate geographic coordinates for each pixel
-cols, rows = np.meshgrid(np.arange(elevation_data.shape[1]), np.arange(elevation_data.shape[0]))
-flat_rows, flat_cols = rows.ravel(), cols.ravel()  # Flatten the arrays
-xs, ys = src.xy(flat_rows, flat_cols, offset='center')  # Get center coordinates of each pixel
-lon, lat = transformer.transform(xs, ys)  # Transform to geographic coordinates
-lon, lat = np.array(lon), np.array(lat)  # Convert to numpy arrays
-lon, lat = lon.reshape(rows.shape), lat.reshape(rows.shape)  # Reshape back to the original shape
+
 # Setup the interactive components and the plot
 mllw = -4.43
 
