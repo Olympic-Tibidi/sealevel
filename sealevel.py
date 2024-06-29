@@ -10,7 +10,7 @@ from google.cloud import storage
 # Setup your credentials for Google Cloud Storage
 
 storage_client = storage.Client()
-
+@st.cache(allow_output_mutation=True)
 def load_data():
     """ Load data from Google Cloud Storage and return processed elevation data. """
     bucket = storage_client.bucket('new_suzano_spare')
@@ -46,7 +46,7 @@ fig = go.Figure(data=[go.Surface(z=st.session_state.elevation_data, x=st.session
 #fig.add_trace(go.Surface(z=np.full(st.session_state.elevation_data.shape, mhhw), showscale=False, opacity=0.5, colorscale=[[0, 'red'], [1, 'red']], name='MHHW'))
 #fig.add_trace(go.Surface(z=np.full(st.session_state.elevation_data.shape, max_tide), showscale=False, opacity=0.5, colorscale=[[0, 'green'], [1, 'green']], name='Max Tide'))
 if st.checkbox("Show MLLW"):
-    fig.add_trace(go.Surface(z=np.full(data.shape, mllw), showscale=False, opacity=0.5, colorscale=[[0, 'blue'], [1, 'blue']], name='MLLW'))
+    fig.add_trace(go.Surface(z=np.full(st.session_state.elevation_data.shape, mllw), showscale=False, opacity=0.5, colorscale=[[0, 'blue'], [1, 'blue']], name='MLLW'))
 fig.update_layout(title='Marine Terminal Elevation with Tidal Levels', autosize=False, scene=dict(zaxis=dict(title='Elevation (feet)')), margin=dict(l=65, r=50, b=65, t=90))
 
 st.plotly_chart(fig, use_container_width=True)
