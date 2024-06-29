@@ -49,8 +49,8 @@ if 'elevation_data' not in st.session_state or 'fig' not in st.session_state:
     st.session_state.fig = go.Figure(data=[
         go.Surface(z=st.session_state.elevation_data, colorscale='Earth', name='Elevation')
     ])
-    st.session_state.fig.add_trace(go.Surface(z=np.full(elevation_data.shape, mllw), showscale=False, opacity=1, colorscale=[[0, 'blue'], [1, 'blue']]))
-    st.session_state.fig.add_trace(go.Surface(z=np.full(elevation_data.shape, mhhw), showscale=False, opacity=0.5, colorscale=[[0, 'red'], [1, 'red']]))
+    st.session_state.fig.add_trace(go.Surface(z=np.full(st.session_state.elevation_data.shape, mllw), showscale=False, opacity=1, colorscale=[[0, 'blue'], [1, 'blue']]))
+    st.session_state.fig.add_trace(go.Surface(z=np.full(st.session_state.elevation_data.shape, mhhw), showscale=False, opacity=0.5, colorscale=[[0, 'red'], [1, 'red']]))
     st.session_state.fig.update_layout(
         title='Marine Terminal Elevation with Tidal Levels',
         autosize=True,
