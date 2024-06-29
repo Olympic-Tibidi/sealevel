@@ -46,9 +46,7 @@ def load_elevation_data(data):
             lon, lat = lon.reshape(rows.shape), lat.reshape(rows.shape)  # Reshape back to the original shape
         
             # Define tidal levels adjusted from NAVD88
-            mllw = -4.470  # MLLW in feet above NAVD88
-            mhhw = mllw + 14.56  # MHHW in feet above MLLW
-            maxtide=mllw+18.4
+            
             return elevation_data,lon,lat
 
 # Load data once and handle transformation for display
@@ -60,6 +58,9 @@ if 'elevation_data' not in st.session_state:
     st.session_state.lats = lats
 
 # Slider for max tide level
+mllw = -4.470  # MLLW in feet above NAVD88
+mhhw = mllw + 14.56  # MHHW in feet above MLLW
+maxtide=mllw+18.4
 max_tide = st.slider('Max Tide Level', -3.0, 20.0, 0.1) - 4.43  # Adjusted for MLLW
 
 # Update or create the Plotly figure
