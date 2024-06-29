@@ -32,8 +32,10 @@ if 'elevation_data' not in st.session_state:
     st.session_state.elevation_data = load_elevation_data(data)
 
 # Setup the interactive components and the plot
-mllw = st.slider('MLLW Level', -10.0, 10.0, -4.03)
+mllw = -4.03
+
 mhhw = mllw + 14.56
+max_tide=st.slider('MLLW Level', -10.0, 10.0, 0)+mllw
 
 # Create or update the Plotly figure
 if 'fig' not in st.session_state:
@@ -50,5 +52,6 @@ if 'fig' not in st.session_state:
 st.session_state.fig.data = [st.session_state.fig.data[0]]  # Keep only the elevation data
 st.session_state.fig.add_trace(go.Surface(z=np.full(st.session_state.elevation_data.shape, mllw), showscale=False, opacity=0.5, colorscale=[[0, 'blue'], [1, 'blue']], name='MLLW'))
 st.session_state.fig.add_trace(go.Surface(z=np.full(st.session_state.elevation_data.shape, mhhw), showscale=False, opacity=0.5, colorscale=[[0, 'red'], [1, 'red']], name='MHHW'))
+st.session_state.fig.add_trace(go.Surface(z=np.full(st.session_state.elevation_data.shape, max_tide), showscale=False, opacity=0.5, colorscale=[[0, 'red'], [1, 'red']], name='MHHW'))
 
 st.plotly_chart(st.session_state.fig)
